@@ -72,6 +72,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
             staff.get().setUserId(user.getId());
             staff.get().setRole(StaffRole.STAFF);
             staffRepository.save(staff.get());
+        }else {
+            Staff newStaff = new Staff();
+            newStaff.setFullName(request.getFullName());
+            newStaff.setPhone(request.getPhone());
+            newStaff.setEmail(request.getEmail());
+            newStaff.setUserId(user.getId());
+            newStaff.setRole(StaffRole.STAFF);
+            staffRepository.save(newStaff);
         }
         return convertToResponse(user, UserResponse.class);
     }
@@ -85,6 +93,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
         User user = convertToEntity(request);
         user.setRole(UserRole.MEMBER);
         user.setProvider("local");
+        user.setActive(true);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         this.save(user);
         Optional<Guest> guest = guestRepository.findGuestByFullNameAndPhone(request.getFullName(), request.getPhone());

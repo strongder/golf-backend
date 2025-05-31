@@ -8,4 +8,5 @@ public class DataFieldGolfCourse {
     private String code;
     private String name;
     private String location;
+    private String holes;
 }

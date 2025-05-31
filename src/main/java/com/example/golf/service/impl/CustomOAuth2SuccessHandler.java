@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -25,7 +26,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
 
-    private final String REDIRECT_URL= "http://localhost:3000/oauth2/redirect";
+    @Value("${app.redirect-url}")
+    private  String REDIRECT_URL;
     private final GuestRepository guestRepository;
 
     @Override
@@ -38,6 +40,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         if (user == null) {
             user = new User();
             user.setEmail(email);
+            user.setActive(true);
             user.setFullName(oauthUser.getAttribute("name"));
             user.setRole(UserRole.MEMBER);
             user.setProvider("GOOGLE");

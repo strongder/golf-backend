@@ -20,5 +20,4 @@ public interface EventRepository extends JpaRepository<Event, String> {
             @Param("status") String status,
             @Param("role") String role
     );
-
 }

@@ -27,7 +27,6 @@ public class User extends BaseEntity {
     private String phone;
     private String password;
     private String provider; // google, facebook, local
-    @Column(columnDefinition = "boolean default false")
     private boolean isActive;
     @Enumerated(EnumType.STRING)
     private UserRole role; // ADMIN, STAFF, GOlFER

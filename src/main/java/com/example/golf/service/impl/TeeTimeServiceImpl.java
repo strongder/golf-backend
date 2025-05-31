@@ -182,12 +182,10 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
             if (nextTeeTimeOpt.isEmpty()) {
                 throw new RuntimeException("Cannot hold all required tee times (next tee time unavailable)");
             }
-
             TeeTime nextTeeTime = nextTeeTimeOpt.get();
             teeTimesToHold.add(nextTeeTime);
             currentStartTime = nextTeeTime.getStartTime();
         }
-
         // Đánh dấu HOLD tất cả teeTime
         String heldBy = currentUser.getRole() != UserRole.MEMBER ? "STAFF_" + currentUser.getId() : currentUser.getId();
         LocalDateTime now = LocalDateTime.now();
@@ -197,7 +195,6 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
             teeTime.setHeldBy(heldBy);
             teeTimeRepository.save(teeTime);
         }
-
         return convertToResponse(firstTeeTime, TeeTimeResponse.class);
     }
 

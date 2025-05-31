@@ -28,7 +28,10 @@
               client-id: 1075279700700-tu1io4ed8t550tiaj0acdmp3ejm8ggkf.apps.googleusercontent.com
               client-secret: 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
               redirect-uri: "http://localhost:8080/login/oauth2/code/google"
-              scope: profile, email
+              scope:
+                - email
+                - profile
+
 
   payment:
     vnPay:
@@ -52,3 +55,4 @@
 
   app:
     secretKey: "1234567890abcdef"
+    redirect-url: "http://localhost:3000/oauth2/redirect"
