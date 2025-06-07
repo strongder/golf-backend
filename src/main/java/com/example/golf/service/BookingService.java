@@ -11,12 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 public interface BookingService extends BaseService<Booking, String> {
    BookingResponse createBooking(CreateBookingRequest request);
    String updateStatus(StatusBookingRequest request);
-
-   @Transactional
    BookingResponse updateBooking(String bookingId, UpdateBookingRequest request);
-
+   String softDelete(String bookingId);
    BaseSearchResponse<BookingResponse> search(BookingSearchRequest request);
-   BookingResponse checkOut(CheckoutRequest request);
+   BookingResponse checkOut(String bookingCode);
    void changeStatus(String bookingId, BookingStatus status);
-   Object checkIn(String bookingId);
+   Object checkIn(String bookingCode);
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class TeeTimeConfigServiceImpl extends BaseServiceImpl<TeeTimeConfig, Str
     public TeeTimeConfigRepository teeTimeConfigRepository;
     @Autowired
     private GolfCourseService golfCourseService;
+    @Autowired
+    private TeeTimeServiceImpl teeTimeServiceImpl;
 
     public TeeTimeConfigServiceImpl(TeeTimeConfigRepository teeTimeConfigRepository) {
         super(teeTimeConfigRepository);
@@ -43,6 +46,7 @@ public class TeeTimeConfigServiceImpl extends BaseServiceImpl<TeeTimeConfig, Str
         TeeTimeConfig teeTimeConfig = convertToEntity(request);
         teeTimeConfig.setDeleted(false);
         teeTimeConfigRepository.save(teeTimeConfig);
+        teeTimeServiceImpl.generateTeeTimeFromConfig(teeTimeConfig, LocalDate.now());
         return convertToResponse(teeTimeConfig, TeeTimeConfigResponse.class);
     }
 

@@ -59,7 +59,6 @@ public class BookingDetailServiceImpl extends BaseServiceImpl<BookingDetail, Str
                 totalPrice += tool.getRentPrice() * bookingDetail.getQuantity();
                 bookingDetail.setUnitPrice(tool.getRentPrice());
                 bookingDetail.setTotalPrice(tool.getRentPrice() * bookingDetail.getQuantity());
-
             } else {
                 Services service = serviceRepository.findById(bookingDetail.getServiceId()).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
                 totalPrice += service.getPrice() * bookingDetail.getQuantity();

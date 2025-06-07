@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ToolResponse {
     private String id;
     private String code;
+    private String imageUrl; // URL of the tool image
     private String name; // Tên dụng cụ (Gậy golf, Máy đo khoảng cách...)
     private int quantity;
     private String type;

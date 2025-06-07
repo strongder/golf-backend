@@ -15,7 +15,7 @@ public class GolfCourse extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String image;
+    private String imageUrl; // URL of the golf course image
     private String code;
     private String name;
     private int holes;

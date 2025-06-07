@@ -6,13 +6,18 @@ import com.example.golf.dtos.services.request.CreateServiceRequest;
 import com.example.golf.dtos.services.response.ServicesResponse;
 import com.example.golf.enums.ErrorResponse;
 import com.example.golf.exception.AppException;
+import com.example.golf.model.GolfCourse;
 import com.example.golf.model.Services;
 import com.example.golf.repository.ServicesRepository;
 import com.example.golf.service.ServicesService;
 import com.example.golf.utils.SearchUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class ServicesServiceImpl extends BaseServiceImpl<Services, String> implements ServicesService {
@@ -22,6 +27,8 @@ public class ServicesServiceImpl extends BaseServiceImpl<Services, String> imple
     private ModelMapper modelMapper;
     @Autowired
     private SearchUtils<Services> searchUtil;
+    @Autowired
+    private FileService fileService;
 
     public ServicesServiceImpl(ServicesRepository servicesRepository) {
         super(servicesRepository);
@@ -34,14 +41,22 @@ public class ServicesServiceImpl extends BaseServiceImpl<Services, String> imple
         services.setStatus("ACTIVE");
         services.setCode(generateCode());
         services.setDeleted(false);
-        return convertToResponse(servicesRepository.save(services), ServicesResponse.class);
+        Services savedService = servicesRepository.save(services);
+        if (request.getImage() != null) {
+            uploadFileAsync(request.getImage(), savedService);
+        }
+        return convertToResponse(savedService, ServicesResponse.class);
     }
 
     @Override
     public ServicesResponse updateServices(String id, CreateServiceRequest request) {
         Services services = servicesRepository.findById(id).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         modelMapper.map(request, services);
-        return convertToResponse(servicesRepository.save(services), ServicesResponse.class);
+        services = servicesRepository.save(services);
+        if (request.getImage() != null) {
+            uploadFileAsync(request.getImage(), services);
+        }
+        return convertToResponse(services, ServicesResponse.class);
     }
 
     @Override
@@ -68,5 +83,17 @@ public class ServicesServiceImpl extends BaseServiceImpl<Services, String> imple
 
     public String generateCode() {
         return "SV" + servicesRepository.count();
+    }
+
+
+    @Async
+    public void uploadFileAsync(MultipartFile file, Services services) {
+        try {
+            String fileName = fileService.uploadFile(file); // upload file bình thường
+            services.setImageUrl(fileName);
+            servicesRepository.save(services);
+        } catch (IOException e) {
+            // log error
+        }
     }
 }

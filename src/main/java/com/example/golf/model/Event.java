@@ -15,6 +15,7 @@ public class Event extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    private String imageUrl; // URL of the event image
     private String title;
     private String description;
     private String type; // e.g. PROMOTION, TOURNAMENT

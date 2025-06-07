@@ -175,11 +175,11 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
     }
 
     @Transactional
-    public BookingResponse checkIn(String bookingId) {
+    public BookingResponse checkIn(String bookingCode) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        Booking booking = bookingRepository.findByBookingCode(bookingCode).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         booking.setStatus(BookingStatus.PLAYING);
         booking.setCheckInBy(user.getFullName());
         booking.setCheckInTime(LocalDateTime.now());
@@ -198,11 +198,11 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
     }
 
     @Transactional
-    public BookingResponse checkOut(CheckoutRequest request) {
+    public BookingResponse checkOut(String bookingCode ) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
-        Booking booking = bookingRepository.findById(request.getBookingId()).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        Booking booking = bookingRepository.findById(bookingCode).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         booking.setStatus(BookingStatus.COMPLETED);
         booking.setCheckOutBy(user.getFullName());
         booking.setCheckOutTime(LocalDateTime.now());
@@ -326,6 +326,16 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
             totalCost += bookingDetail.getTotalPrice();
         }
         return totalCost;
+    }
+
+
+    public String softDelete(String id)
+    {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        booking.setDeleted(true);
+        bookingRepository.save(booking);
+        return id;
     }
 
     public void changeStatus(String bookingId, BookingStatus status) {

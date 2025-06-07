@@ -4,6 +4,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class CreateEventRequest {
     private String title;
+    private MultipartFile image; // URL of the event image
     private String description;
     private String type; // e.g. PROMOTION, TOURNAMENT
     private Double discountPercent;

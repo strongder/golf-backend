@@ -17,12 +17,12 @@ public class EventController {
     private  EventService eventService;
 
     @PostMapping("/create")
-    public ApiResponse create(@RequestBody CreateEventRequest request){
-        return ApiResponse.success(eventService.save(request, EventResponse.class));
+    public ApiResponse create(@ModelAttribute CreateEventRequest request){
+        return ApiResponse.success(eventService.create(request));
     }
 
     @PutMapping("/update/{id}")
-    public ApiResponse update(@PathVariable String id, @RequestBody CreateEventRequest request){
+    public ApiResponse update(@PathVariable String id, @ModelAttribute CreateEventRequest request){
         return ApiResponse.success(eventService.update(id, request));
     }
 

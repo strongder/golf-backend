@@ -39,7 +39,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private final UserRepository userRepository;
+    @Autowired
+    private  UserRepository userRepository;
 
     @Autowired
     private GuestRepository guestRepository;
@@ -49,6 +50,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
     private SearchUtils<User> searchUtil;
     @Autowired
     private FileService fileService;
+
 
     public UserServiceImpl(UserRepository userRepository) {
         super(userRepository);

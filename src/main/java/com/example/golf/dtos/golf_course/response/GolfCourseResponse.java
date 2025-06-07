@@ -12,7 +12,7 @@ public class GolfCourseResponse {
     private String id;
     private String code;
     private String name;
-    private String image;
+    private String imageUrl;
     private int holes;
     private int duration; // thoi gian choi
     private float length; // do dai san golf

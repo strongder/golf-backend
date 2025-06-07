@@ -17,6 +17,7 @@ public class Services extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String code;
+    private String imageUrl;
     private String type; // GOLF_CLUB, GOLF_BALL, GOLF_BAG, GOLF_CART, GOLF_SHOES, GOLF_GLOVE, GOLF_TEE
     private String name;
     private String description;

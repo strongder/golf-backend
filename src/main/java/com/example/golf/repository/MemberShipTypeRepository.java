@@ -14,6 +14,4 @@ public interface MemberShipTypeRepository extends JpaRepository<MembershipType, 
     @Query("SELECT m FROM MembershipType m WHERE m.name = ?1 AND m.isDeleted = false")
     MembershipType findByDeletedIsFalse(String name);
 
-
-
 }

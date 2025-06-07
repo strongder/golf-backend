@@ -9,9 +9,11 @@ import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.dtos.user.Response.DataFieldUser;
 import com.example.golf.enums.ErrorResponse;
 import com.example.golf.enums.MembershipStatus;
+import com.example.golf.enums.NotificationType;
 import com.example.golf.exception.AppException;
 import com.example.golf.model.Membership;
 import com.example.golf.model.MembershipType;
+import com.example.golf.model.Notification;
 import com.example.golf.model.User;
 import com.example.golf.repository.MemberShipRepository;
 import com.example.golf.repository.MemberShipTypeRepository;
@@ -45,6 +47,8 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
     private UserRepository userRepository;
     @Autowired
     private MemberShipTypeRepository memberShipTypeRepository;
+    @Autowired
+    private NotificationServiceImpl notificationServiceImpl;
 
     public MembershipServiceImpl(MemberShipRepository memberShipRepository, ModelMapper modelMapper) {
         super(memberShipRepository);
@@ -205,4 +209,27 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
         membership.setStatus(membershipStatus);
         memberShipRepository.save(membership);
     }
+
+    // conjob membership sap het han de thong bao toi user
+    @Scheduled(cron = "0 0 1 * * ?") // Mỗi ngày lúc 0 giờ sáng
+    public void sendNotificationToUserAboutMembershipExpiration() {
+        LocalDate today = LocalDate.now();
+        List<Membership> memberships = memberShipRepository.findAll();
+        for (Membership membership : memberships) {
+            if (membership.getEndDate().isEqual(today) && membership.getStatus() == MembershipStatus.ACTIVE) {
+                User user = userRepository.findById(membership.getUserId())
+                        .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+                Notification notification = Notification.builder()
+                        .userId(user.getId())
+                        .type(NotificationType.MEMBERSHIP)
+                        .isRead(false)
+                        .dataId(membership.getId())
+                        .title("Thông báo hết hạn thành viên")
+                        .content("Thành viên của bạn sẽ hết hạn vào ngày " + membership.getEndDate() + ". Vui lòng gia hạn để tiếp tục sử dụng dịch vụ.")
+                        .build();
+                notificationServiceImpl.sendNotification(notification);
+            }
+        }
+    }
+
 }

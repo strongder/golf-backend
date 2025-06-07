@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class EventResponse {
     private String id;
     private String title;
+    private String imageUrl; // URL of the event image
     private String description;
     private String type; // e.g. PROMOTION, TOURNAMENT
     private Double discountPercent;

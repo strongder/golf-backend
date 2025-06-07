@@ -1,5 +1,5 @@
 package com.example.golf.enums;
 
 public enum NotificationType {
-    BOOKING, PAYMENT, MAINTENANCE, PROMOTION
+    BOOKING, PAYMENT, MAINTENANCE, MEMBERSHIP, PROMOTION
 }

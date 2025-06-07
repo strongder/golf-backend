@@ -20,12 +20,12 @@ public class ToolController {
 
     @Operation(summary = "Create tool")
     @PostMapping
-    public ApiResponse createTool(@RequestBody CreateToolRequest request) {
+    public ApiResponse createTool(@ModelAttribute CreateToolRequest request) {
         return ApiResponse.success(toolsService.createTool(request));
     }
     @Operation(summary = "update tool")
     @PutMapping("/upadate/{id}")
-    public ApiResponse updateTool (@PathVariable("id") String id, @RequestBody CreateToolRequest request) {
+    public ApiResponse updateTool (@PathVariable("id") String id, @ModelAttribute CreateToolRequest request) {
         return ApiResponse.success(toolsService.update(id, request));
     }
 

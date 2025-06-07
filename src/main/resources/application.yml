@@ -54,5 +54,5 @@
     dir: uploads
 
   app:
-    secretKey: "1234567890abcdef"
+    secretKey: "bWluZHNla2V5MTIzNDU2Nzg5MDEyMzQ1Njc4OTA="
     redirect-url: "http://localhost:3000/oauth2/redirect"

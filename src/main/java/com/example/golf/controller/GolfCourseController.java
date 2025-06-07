@@ -20,12 +20,12 @@ public class GolfCourseController {
     private GolfCourseService golfCourseService;
 
     @PostMapping
-    public ApiResponse create(@RequestBody  CreateGolfCourseRequest request) {
+    public ApiResponse create(@ModelAttribute  CreateGolfCourseRequest request) {
         return ApiResponse.success(golfCourseService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ApiResponse update(@PathVariable("id") String id, @RequestBody CreateGolfCourseRequest request) {
+    public ApiResponse update(@PathVariable("id") String id, @ModelAttribute CreateGolfCourseRequest request) {
         return ApiResponse.success(golfCourseService.update(id, request));
     }
 

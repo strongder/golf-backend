@@ -11,11 +11,9 @@ import com.example.golf.enums.*;
 import com.example.golf.exception.AppException;
 import com.example.golf.model.Booking;
 import com.example.golf.model.Membership;
+import com.example.golf.model.Notification;
 import com.example.golf.model.Payment;
-import com.example.golf.repository.BookingRepository;
-import com.example.golf.repository.PaymentRepository;
-import com.example.golf.repository.PaymentRepositoryImpl;
-import com.example.golf.repository.UserRepository;
+import com.example.golf.repository.*;
 import com.example.golf.utils.VnpayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
@@ -50,6 +48,10 @@ public class PaymentServiceImpl {
     private UserRepository userRepository;
     @Autowired
     private PaymentRepositoryImpl paymentRepositoryImpl;
+    @Autowired
+    private NotificationServiceImpl notificationServiceImpl;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Transactional
     public VnpayResponse createVnPayPayment(PaymentRequest paymentRequest, HttpServletRequest request) {
@@ -95,12 +97,35 @@ public class PaymentServiceImpl {
         }
         Payment payment = paymentRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new AppException(ErrorResponse.TRANSACTION_NOT_EXISTED));
+
         if (status.equals("00")) {
             payment.setStatus(PaymentStatus.COMPLETED);
             if (payment.getType() == PaymentType.BOOKING) {
                 bookingServiceImpl.changeStatus(payment.getReferenceId(), BookingStatus.CONFIRMED);
+                Notification notification = Notification.builder()
+                        .userId(payment.getUserId())
+                        .title("Payment Successful")
+                        .type(NotificationType.PAYMENT)
+                        .content("Your booking payment has been successfully completed.")
+                        .dataId(payment.getReferenceId())
+                        .isRead(false)
+                        .build();
+                // Lưu thông báo vào CSDL
+                notificationRepository.save(notification);
+                notificationServiceImpl.sendNotification(notification);
             } else if (payment.getType() == PaymentType.MEMBERSHIP) {
                 membershipServiceImpl.changeStatus(payment.getReferenceId(), MembershipStatus.PAID);
+                Notification notification = Notification.builder()
+                        .userId(payment.getUserId())
+                        .title("Payment Successful")
+                        .type(NotificationType.PAYMENT)
+                        .content("Your membership payment has been successfully completed.")
+                        .dataId(payment.getReferenceId())
+                        .isRead(false)
+                        .build();
+                // Lưu thông báo vào CSDL
+                notificationRepository.save(notification);
+                notificationServiceImpl.sendNotification(notification);
             }
             return VnpayResponse.builder()
                     .code("00")

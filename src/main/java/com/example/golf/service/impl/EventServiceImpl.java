@@ -8,6 +8,7 @@ import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.enums.ErrorResponse;
 import com.example.golf.exception.AppException;
 import com.example.golf.model.Event;
+import com.example.golf.model.GolfCourse;
 import com.example.golf.model.User;
 import com.example.golf.repository.EventRepository;
 import com.example.golf.service.EventService;
@@ -16,11 +17,14 @@ import com.example.golf.service.UserService;
 import com.example.golf.utils.SearchUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,6 +42,8 @@ public class EventServiceImpl extends BaseServiceImpl<Event, String> implements 
     private UserService userService;
     @Autowired
     private SearchUtils<Event> searchUtils;
+    @Autowired
+    private FileService fileService;
 
     public EventServiceImpl(EventRepository eventRepository) {
         super(eventRepository);
@@ -93,17 +99,41 @@ public class EventServiceImpl extends BaseServiceImpl<Event, String> implements 
     }
 
     @Transactional
+    public BaseSearchResponse<EventResponse> search(BaseSearchRequest request) {
+        return searchUtils.search(Event.class, request, event -> convertToResponse(event, EventResponse.class));
+    }
+
+    @Override
+    public EventResponse create(CreateEventRequest request) {
+        Event event = convertToEntity(request);
+        event.setStatus(request.getStatus());
+        event.setDeleted(false);
+        event = eventRepository.save(event);
+        if(request.getImage() != null) {
+            uploadFileAsync(request.getImage(), event);
+        }
+        return convertToResponse(event, EventResponse.class);
+    }
+    @Transactional
     public EventResponse update(String id, CreateEventRequest request)
     {
         Event event = eventRepository.findById(id).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         modelMapper.map(request, event);
         event.setId(id);
         eventRepository.save(event);
+        if (request.getImage() != null) {
+            uploadFileAsync(request.getImage(), event);
+        }
         return modelMapper.map(event, EventResponse.class);
     }
-
-    @Transactional
-    public BaseSearchResponse<EventResponse> search(BaseSearchRequest request) {
-        return searchUtils.search(Event.class, request, event -> convertToResponse(event, EventResponse.class));
+    @Async
+    public void uploadFileAsync(MultipartFile file, Event event) {
+        try {
+            String fileName = fileService.uploadFile(file); // upload file bình thường
+            event.setImageUrl(fileName);
+            eventRepository.save(event);
+        } catch (IOException e) {
+            // log error
+        }
     }
 }

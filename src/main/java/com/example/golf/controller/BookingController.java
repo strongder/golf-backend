@@ -2,6 +2,7 @@ package com.example.golf.controller;
 
 import com.example.golf.dtos.ApiResponse;
 import com.example.golf.dtos.booking.Request.*;
+import com.example.golf.dtos.booking.Response.BookingResponse;
 import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +42,18 @@ public class BookingController {
         return ApiResponse.success(bookingService.checkIn(bookingId));
     }
 
+    @Operation(summary = "Delete booking")
+    @DeleteMapping("/{bookingId}")
+    private ApiResponse deleteBooking(@PathVariable("bookingId") String bookingId) {
+        return ApiResponse.success(bookingService.softDelete(bookingId));
+    }
+
+    //getById
+    @Operation(summary = "Get booking by id")
+    @GetMapping("/{id}")
+    private ApiResponse getById(@PathVariable  String id) {
+        return ApiResponse.success(bookingService.getById(id, BookingResponse.class));
+    }
 
     @Operation(summary = "Get booking by id")
     @PostMapping("/search")
@@ -56,7 +69,7 @@ public class BookingController {
 
     @Operation(summary = "Check out booking")
     @PostMapping("/check-out")
-    public ApiResponse checkOut(@RequestBody CheckoutRequest request) {
-        return ApiResponse.success(bookingService.checkOut(request));
+    public ApiResponse checkOut(@RequestParam  String bookingCode) {
+        return ApiResponse.success(bookingService.checkOut(bookingCode));
     }
 }

@@ -16,6 +16,7 @@ public class Tool extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String code;
+    private String imageUrl; // URL of the tool image
     private String name; // Tên dụng cụ (Gậy golf, Máy đo khoảng cách...)
     private int quantity;
     private String type; //loọi thiet bi GOLF_CLUB, GOLF_BALL, GOLF_BAG, GOLF_CART, GOLF_SHOES, GOLF_GLOVE, GOLF_TEE

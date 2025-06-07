@@ -16,4 +16,7 @@ public interface MemberShipRepository extends JpaRepository<Membership, String> 
 
     @Query("SELECT m FROM Membership m  WHERE m.userId = ?1 AND m.isDeleted = false and m.status = ?2")
     Membership findByUserIdAndStatus(String userId, MembershipStatus status);
+
+
+
 }

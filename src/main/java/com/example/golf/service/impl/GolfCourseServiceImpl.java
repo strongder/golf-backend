@@ -59,6 +59,9 @@ public class GolfCourseServiceImpl extends BaseServiceImpl<GolfCourse, String> i
         modelMapper.map(request, golfCourse);
         golfCourse.setStatus(GolfCourseStatus.ACTIVE);
         golfCourse = golfCourseRepository.save(golfCourse);
+        if (request.getImage() != null) {
+            uploadFileAsync(request.getImage(), golfCourse);
+        }
         return convertToResponse(golfCourse, GolfCourseResponse.class);
     }
 
@@ -81,7 +84,7 @@ public class GolfCourseServiceImpl extends BaseServiceImpl<GolfCourse, String> i
     public void uploadFileAsync(MultipartFile file, GolfCourse golfCourse) {
         try {
             String fileName = fileService.uploadFile(file); // upload file bình thường
-            golfCourse.setImage(fileName);
+            golfCourse.setImageUrl(fileName);
             golfCourseRepository.save(golfCourse);
         } catch (IOException e) {
             // log error

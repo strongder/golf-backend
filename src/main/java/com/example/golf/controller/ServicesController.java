@@ -22,7 +22,7 @@ public class ServicesController {
 
     @Operation(summary = "Create services")
     @PostMapping
-    public ApiResponse createServices(@RequestBody CreateServiceRequest request) {
+    public ApiResponse createServices(@ModelAttribute CreateServiceRequest request) {
         return ApiResponse.success(servicesService.createServices(request));
     }
 
@@ -40,7 +40,7 @@ public class ServicesController {
 
     @Operation(summary = "update services")
     @PutMapping("/{id}")
-    public ApiResponse updateServices (@PathVariable("id") String id, @RequestBody CreateServiceRequest request) {
+    public ApiResponse updateServices (@PathVariable("id") String id, @ModelAttribute CreateServiceRequest request) {
         return ApiResponse.success(servicesService.updateServices(id, request));
     }
 

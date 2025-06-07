@@ -11,10 +11,8 @@ import java.util.List;
 
 public interface EventService extends BaseService<Event, String> {
     String softDelete(String id);
-     List<EventResponse> getEventByTypeAndDate(EventForUserRequest eventForUserRequest);
-
-
+    List<EventResponse> getEventByTypeAndDate(EventForUserRequest eventForUserRequest);
     Object search(BaseSearchRequest request);
-
+    EventResponse create(CreateEventRequest request);
     EventResponse update(String id, CreateEventRequest request);
 }
