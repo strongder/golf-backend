@@ -20,7 +20,7 @@ public class Booking extends BaseEntity{
     private String fullName; // Tên khách đặt sân
     private String email; // Email khách đặt sân
     private String golferId; // id khach hàng
-    private String userId;
+    private String userId;   // id nhan vien hoac nguoi dung co tai khoan
     private String golfCourseId; // Sân golf được đặt
     private String teeTimeId; // Thời gian tee time được đặt
     private LocalDate bookingDate; // Ngày đặt sân

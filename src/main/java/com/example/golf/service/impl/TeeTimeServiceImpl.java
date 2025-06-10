@@ -52,8 +52,7 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
         this.teeTimeRepository = teeTimeRepository;
         this.teeTimeConfigRepository = teeTimeConfigRepository;
     }
-    // chạy mỗi 30 phút
-    @Scheduled(cron = "0 0,33 * * * *")
+    @Scheduled(cron = "0 0,30 * * * *")
     public void autoCreateTeeTimeRolling() {
         for (int i = 0; i < 7; i++) {
             LocalDate date = LocalDate.now().plusDays(i);
@@ -183,7 +182,7 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
                 throw new RuntimeException("Cannot hold all required tee times (next tee time unavailable)");
             }
             TeeTime nextTeeTime = nextTeeTimeOpt.get();
-            teeTimesToHold.add(nextTeeTime);
+            teeTimesToHold.add(nextTeeTime);// Thêm tee time kế tiếp vào danh sách
             currentStartTime = nextTeeTime.getStartTime();
         }
         // Đánh dấu HOLD tất cả teeTime

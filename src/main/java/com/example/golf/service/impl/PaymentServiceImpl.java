@@ -59,7 +59,6 @@ public class PaymentServiceImpl {
         String bankCode = request.getParameter("bankCode");
         // Tạo và lưu giao dịch Payment vào CSDL
         Payment payment = createPayment(paymentRequest);
-
         // Lưu transactionId cho giao dịch Payment
         String transactionId = VnpayUtil.getRandomNumber(8); // Tạo một transactionId ngẫu nhiên
         payment.setTransactionId(transactionId);
@@ -80,6 +79,7 @@ public class PaymentServiceImpl {
         String vnpSecureHash = VnpayUtil.hmacSHA512(vnpayConfig.getSecretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
 
+        //Nối base URL của VNPay với chuỗi query để có URL thanh toán hoàn chỉnh.
         String paymentUrl = vnpayConfig.getVnp_PayUrl() + "?" + queryUrl;
 
         // Trả về VnpayResponse với URL thanh toán

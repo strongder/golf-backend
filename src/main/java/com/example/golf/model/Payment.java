@@ -21,6 +21,6 @@ public class  Payment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status; // PENDING, COMPLETED, FAILED
     @Enumerated(EnumType.STRING)
-    private PaymentType type; // BOOKING, MEMBERSHIP, SERVICE
-    private String referenceId; // ID của booking/membership/service
+    private PaymentType type; // BOOKING, MEMBERSHIP
+    private String referenceId; // ID của booking/membership
 }
