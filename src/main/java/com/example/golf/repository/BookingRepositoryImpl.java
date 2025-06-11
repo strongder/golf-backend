@@ -101,7 +101,7 @@ public class BookingRepositoryImpl {
             predicates.add(cb.equal(root.get("golfCourseId"), request.getGolfCourseId()));
         }
 
-        // Filter by bookingDate
+        // Filter by bookingDateguest
         if (request.getBookingDate() != null) {
             predicates.add(cb.equal(root.get("bookingDate"), request.getBookingDate()));
         }
@@ -115,6 +115,9 @@ public class BookingRepositoryImpl {
         if (StringUtils.hasText(request.getUserId())) {
             predicates.add(cb.equal(root.get("userId"), request.getUserId()));
         }
+
+        // filter isDeteted
+        predicates.add(cb.isFalse(root.get("isDeleted")));
 
         // Filter by createdAt (startDate, endDate)
         if (request.getStartDate() != null) {

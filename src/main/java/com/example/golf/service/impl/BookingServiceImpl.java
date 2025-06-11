@@ -108,7 +108,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
             throw new RuntimeException("Tee time is held by another user");
         }
 
-        //  Cập nhật trạng thái thành BOOKED
+        // ✅ Cập nhật trạng thái thành BOOKED
         teeTime.setStatus(TeeTimeStatus.BOOKED);
         teeTime.setHeldAt(null);
         teeTime.setHeldBy(null);
@@ -116,9 +116,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         teeTimeRepository.save(teeTime);
         booking.setTeeTimeId(teeTime.getId());
 
-        // Khởi tạo chi phí cơ bản từ tee time
-        booking.setTotalCost(booking.getTotalCost() + teeTime.getPrice() * request.getNumPlayers());
-        Booking savedBooking = bookingRepository.save(booking);// luu vao db
+        Booking savedBooking = bookingRepository.save(booking);
         // Xử lý số lỗ không khớp
         if (request.getNumberOfHoles() != golfCourse.getHoles()) {
             bookNextTeeTime(teeTime, golfCourse, savedBooking);
@@ -188,7 +186,6 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         teeTime.setStatus(TeeTimeStatus.CHECKED_IN);
         teeTimeRepository.save(teeTime);
         bookingRepository.save(booking);
-        // Cập nhật thiết bị thuê (nếu có)
         List<BookingDetail> bookingDetails = bookingDetailRepository.findByBookingId(booking.getId());
         bookingDetails.forEach(bookingDetail -> {
             if (bookingDetail.getToolId() != null) {
@@ -281,7 +278,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
                     nextGolfCourse.getId(),
                     bookingDate,
                     startTime.plusMinutes(golfCourse.getDuration()), // Thời gian bắt đầu tee time tiếp theo
-                    TeeTimeStatus.AVAILABLE
+                    TeeTimeStatus.HOLD
             );
             if (nextTeeTimeOpt.isEmpty()) {
                 throw new AppException(ErrorResponse.TEE_TIME_NOT_AVAILABLE);

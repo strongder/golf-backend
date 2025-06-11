@@ -6,6 +6,8 @@ import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.model.GolfCourse;
 
+import java.util.List;
+
 public interface GolfCourseService extends BaseService<GolfCourse, String> {
 
     BaseSearchResponse<GolfCourseResponse> search(BaseSearchRequest request);
@@ -13,4 +15,8 @@ public interface GolfCourseService extends BaseService<GolfCourse, String> {
     Object create(CreateGolfCourseRequest request);
 
     Object update(String id, CreateGolfCourseRequest request);
+
+    List<GolfCourseResponse> getAll();
+
+    String softDelete(String id);
 }
