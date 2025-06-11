@@ -26,9 +26,7 @@ public class ChatBotController {
         Map<String, Object> queryResult = (Map<String, Object>) request.get("queryResult");
         Map<String, Object> parameters = (Map<String, Object>) queryResult.get("parameters");
         String intentName = (String) ((Map<String, Object>) queryResult.get("intent")).get("displayName");
-
         String reply;
-
         switch (intentName) {
             case "AskOpeningHours":
                 reply = chatBotServiceImpl.getOpeningHours().getMessage();

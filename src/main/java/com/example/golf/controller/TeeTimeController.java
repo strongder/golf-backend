@@ -30,7 +30,7 @@ public class TeeTimeController {
     public ApiResponse getTeeTimeByDateAndGolfCourseId(@RequestParam(value = "golfCourseId", required = false) String golfCourseId,
                                                        @RequestParam(value = "date", required = false) LocalDate date,
                                                        @RequestParam(value = "page", defaultValue = "0") int page,
-                                                       @RequestParam(value = "size", defaultValue = "10") int size) {
+                                                       @RequestParam(value = "size", defaultValue = "20") int size) {
         return ApiResponse.success(teeTimeService.getTeeTimeByDateAndGolfCourseId(golfCourseId, date, page, size));
     }
 

@@ -1,7 +1,7 @@
 package com.example.golf.enums;
 
 public enum StaffRole {
-    RECEPTIONIST,
+    MANAGER,
     CADDY,
     MAINTENANCE,
     STAFF

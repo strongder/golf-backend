@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class PaymentResponse {
     private String id;
     private Double amount; // Số tiền thanh toán
+    private String code;
     private String userId; // ID của người dùng
     private DataFieldUser user;
     private String transactionId; // ID giao dịch VNPay

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/membership")
 public class MembershipController {
 
-
     @Autowired
     private MembershipService memberShipService;
 

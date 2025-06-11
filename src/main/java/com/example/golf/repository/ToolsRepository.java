@@ -12,5 +12,5 @@ public interface ToolsRepository  extends JpaRepository<Tool, String> {
     List<Tool> findByToolDeleteFalse();
 
     @Query("SELECT t FROM Tool t WHERE t.type = 'GOLF_CLUB' AND t.isDeleted = false")
-    List<Tool> findByGolfClub();
+    List<Tool> findToolByType(String type);
 }

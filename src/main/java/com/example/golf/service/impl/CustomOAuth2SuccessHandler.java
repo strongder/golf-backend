@@ -34,7 +34,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
         String email = oauthUser.getAttribute("email");
-
         // Tạo user nếu chưa tồn tại
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
@@ -45,9 +44,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             user.setRole(UserRole.MEMBER);
             user.setProvider("GOOGLE");
             userRepository.save(user);
-
             Guest guest = new Guest();
-//            guest.setAvatar(oauthUser.getAttribute("picture"));
             guest.setUserId(user.getId());
             guest.setFullName(user.getFullName());
             guest.setEmail(user.getEmail());

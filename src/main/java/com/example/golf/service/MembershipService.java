@@ -17,7 +17,6 @@ public interface MembershipService extends BaseService<Membership, String> {
     MembershipResponse registerMembership(CreateMembershipRequest request);
     String confirmMembership(String membershipId);
 
-    @Transactional
     String inActiveMemberShip(String membershipId);
 
     String cancelMembership(String membershipId);

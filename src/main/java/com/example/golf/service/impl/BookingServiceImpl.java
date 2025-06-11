@@ -202,7 +202,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
-        Booking booking = bookingRepository.findById(bookingCode).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        Booking booking = bookingRepository.findByBookingCode(bookingCode).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         booking.setStatus(BookingStatus.COMPLETED);
         booking.setCheckOutBy(user.getFullName());
         booking.setCheckOutTime(LocalDateTime.now());

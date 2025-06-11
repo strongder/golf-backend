@@ -15,6 +15,7 @@ public class  Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Double amount; // Số tiền thanh toán
+    private String code;
     private String userId; // ID của người dùng
     private String transactionId; // ID giao dịch VNPay
     private String paymentMethod; // "cash", "card", "VNPay"

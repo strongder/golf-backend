@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -53,38 +54,48 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
         this.teeTimeConfigRepository = teeTimeConfigRepository;
     }
     // chạy mỗi 30 phút
-    @Scheduled(cron = "0 0,33 * * * *")
+    @Scheduled(cron = "0 0,45 * * * *")
+    @Async
     public void autoCreateTeeTimeRolling() {
         for (int i = 0; i < 7; i++) {
             LocalDate date = LocalDate.now().plusDays(i);
-            if(!teeTimeRepository.existsByDate(date))
-            {
-                String dayType = getDayType(date); // WEEKDAY hoặc WEEKEND
-                List<TeeTimeConfig> configs = teeTimeConfigRepository.findByDateType(dayType);
-                configs.forEach(config -> generateTeeTimeFromConfig(config, date));
+            String dayType = getDayType(date); // WEEKDAY hoặc WEEKEND
+            List<TeeTimeConfig> configs = teeTimeConfigRepository.findByDateType(dayType);
+            for (TeeTimeConfig config : configs) {
+                String courseId = config.getGolfCourseId();
+                // Kiểm tra xem tee time đã được tạo cho sân này vào ngày đó chưa
+                int exists = teeTimeRepository.existsByDateAndGolfCourseId(date, courseId);
+                if (exists == 0) {
+                    generateTeeTimeFromConfig(config, date);
+                }
             }
         }
     }
 
-    public void generateTeeTimeFromConfig(TeeTimeConfig teeTimeConfig, LocalDate date) {
-        GolfCourse golfCourse = golfCourseRepository.findById(teeTimeConfig.getGolfCourseId()).orElseThrow(() -> new RuntimeException("Golf course not found"));
-        LocalTime startTime = teeTimeConfig.getStartTime();
-        LocalTime endTime = teeTimeConfig.getEndTime();
-        Duration slot = Duration.ofMinutes(teeTimeConfig.getDuration());
+    public void generateTeeTimeFromConfig(TeeTimeConfig config, LocalDate date) {
+        GolfCourse course = golfCourseRepository.findById(config.getGolfCourseId())
+                .orElseThrow(() -> new RuntimeException("Golf course not found with ID: " + config.getGolfCourseId()));
+
+        LocalTime startTime = config.getStartTime();
+        LocalTime endTime = config.getEndTime();
+        Duration slot = Duration.ofMinutes(config.getDuration());
+        int courseDuration = course.getDuration(); // phút
 
         while (!startTime.isAfter(endTime.minus(slot))) {
             TeeTime teeTime = new TeeTime();
             teeTime.setDate(date);
             teeTime.setStartTime(startTime);
-            teeTime.setEndTime(startTime.plusMinutes(golfCourse.getDuration()));
-            teeTime.setGolfCourseId(teeTimeConfig.getGolfCourseId());
+            teeTime.setEndTime(startTime.plusMinutes(courseDuration));
+            teeTime.setGolfCourseId(course.getId());
             teeTime.setStatus(TeeTimeStatus.AVAILABLE);
-            teeTime.setPrice(teeTimeConfig.getPrice());
-            teeTime.setMaxPlayers(teeTimeConfig.getMaxPlayers());
-            teeTimeRepository.save(teeTime);
+            teeTime.setPrice(config.getPrice());
+            teeTime.setMaxPlayers(config.getMaxPlayers());
+
+            teeTimeRepository.save(teeTime); // Có thể gom lại batch nếu cần tối ưu
             startTime = startTime.plus(slot);
         }
     }
+
     public String getDayType(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {

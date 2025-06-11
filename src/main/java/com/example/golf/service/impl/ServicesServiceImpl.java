@@ -5,8 +5,8 @@ import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.dtos.services.request.CreateServiceRequest;
 import com.example.golf.dtos.services.response.ServicesResponse;
 import com.example.golf.enums.ErrorResponse;
+import com.example.golf.enums.ServiceType;
 import com.example.golf.exception.AppException;
-import com.example.golf.model.GolfCourse;
 import com.example.golf.model.Services;
 import com.example.golf.repository.ServicesRepository;
 import com.example.golf.service.ServicesService;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class ServicesServiceImpl extends BaseServiceImpl<Services, String> implements ServicesService {
@@ -62,6 +63,22 @@ public class ServicesServiceImpl extends BaseServiceImpl<Services, String> imple
     @Override
     public BaseSearchResponse<ServicesResponse> search(BaseSearchRequest request) {
         return searchUtil.search(Services.class, request, service -> convertToResponse(service, ServicesResponse.class));
+    }
+
+    @Override
+    public List<ServicesResponse> getServiceByTypeNot(ServiceType type) {
+        List<Services> servicesList = servicesRepository.findServicesByTypeNot(type);
+        return servicesList.stream()
+                .map(service -> convertToResponse(service, ServicesResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<ServicesResponse> getServiceByType(ServiceType type) {
+        List<Services> servicesList = servicesRepository.findServicesByType(type);
+        return servicesList.stream()
+                .map(service -> convertToResponse(service, ServicesResponse.class))
+                .toList();
     }
 
     public String softDelete(String id) {

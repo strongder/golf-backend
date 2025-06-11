@@ -41,4 +41,7 @@ public interface TeeTimeRepository extends JpaRepository<TeeTime, String> {
 
     @Query("SELECT t FROM TeeTime t WHERE t.status = :teeTimeStatus AND t.date = :date")
     List<TeeTime> findByStatusAndDate(TeeTimeStatus teeTimeStatus, LocalDate date);
+
+    @Query("SELECT count(t) FROM TeeTime t WHERE t.date = :date AND t.golfCourseId = :courseId AND t.isDeleted = false")
+    int existsByDateAndGolfCourseId(LocalDate date, String courseId);
 }

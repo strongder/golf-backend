@@ -17,7 +17,6 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
-
     @PostMapping
     @Operation(summary = "Create staff")
     public ApiResponse createStaff(@RequestBody CreateStaffRequest request) {

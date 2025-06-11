@@ -6,6 +6,7 @@ import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.dtos.services.request.CreateServiceRequest;
 import com.example.golf.dtos.services.response.ServicesResponse;
 import com.example.golf.dtos.tool.request.CreateToolRequest;
+import com.example.golf.enums.ServiceType;
 import com.example.golf.service.ServicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,17 @@ public class ServicesController {
     @PostMapping("/search")
     public ApiResponse search(@RequestBody BaseSearchRequest request) {
         return ApiResponse.success(servicesService.search(request));
+    }
+
+    @Operation(summary = "Get services by type")
+    @GetMapping("/type")
+    public ApiResponse getServiceByType(@RequestParam("type") ServiceType type) {
+        return ApiResponse.success(servicesService.getServiceByType(type));
+    }
+
+    @Operation(summary = "Get services by type not")
+    @GetMapping("/not-type")
+    public ApiResponse getServiceTypeNot(@RequestParam("type") ServiceType type) {
+        return ApiResponse.success(servicesService.getServiceByTypeNot(type));
     }
 }
