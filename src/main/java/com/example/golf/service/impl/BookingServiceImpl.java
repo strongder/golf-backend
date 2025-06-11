@@ -68,6 +68,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request) {
         User currentUser = userService.getCurrentUser();
+        //check san ton tai hay ko
         GolfCourse golfCourse = golfCourseRepository.findById(request.getGolfCourseId())
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         Booking booking = convertToEntity(request);
@@ -95,13 +96,12 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
             throw new RuntimeException("Tee time is not being held");
         }
 
-        // ✅ Kiểm tra thời gian HOLD còn hiệu lực (ví dụ: 5 phút)
+        //  Kiểm tra thời gian HOLD còn hiệu lực (ví dụ: 5 phút)
         if (teeTime.getHeldAt() != null &&
                 teeTime.getHeldAt().isBefore(LocalDateTime.now().minusMinutes(5))) {
             throw new RuntimeException("Tee time hold has expired");
         }
-
-
+        // check tee time dang giu boi ai ?
         String currentUserId = request.getUserId() != null ? request.getUserId() : "STAFF_" + currentUser.getId();
 
         if (teeTime.getHeldBy() != null && !teeTime.getHeldBy().equals(currentUserId)) {

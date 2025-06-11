@@ -54,7 +54,7 @@ public class TeeTimeServiceImpl extends BaseServiceImpl<TeeTime, String> impleme
         this.teeTimeConfigRepository = teeTimeConfigRepository;
     }
     // chạy mỗi 30 phút
-    @Scheduled(cron = "0 0,45 * * * *")
+    @Scheduled(cron = "0 0,25 * * * *")
     @Async
     public void autoCreateTeeTimeRolling() {
         for (int i = 0; i < 7; i++) {

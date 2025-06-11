@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class CreateServiceRequest {
     private String name;
+    private String code;
     private String type; // tool, other
     private String description;
     private MultipartFile image; // URL of the service image
