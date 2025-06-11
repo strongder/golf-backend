@@ -23,4 +23,6 @@ public interface ServicesService extends BaseService<Services, String> {
 
 
     List<ServicesResponse> getServiceByTypeNot(ServiceType type);
+
+    List<ServicesResponse> getAll();
 }

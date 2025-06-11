@@ -30,7 +30,7 @@ public class ServicesController {
     @Operation(summary = "Get all services")
     @GetMapping("/all")
     public ApiResponse getAllServices() {
-        return ApiResponse.success(servicesService.findAll(ServicesResponse.class));
+        return ApiResponse.success(servicesService.getAll());
     }
 
     @Operation(summary = "Create list ")

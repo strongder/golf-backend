@@ -74,6 +74,14 @@ public class ServicesServiceImpl extends BaseServiceImpl<Services, String> imple
     }
 
     @Override
+    public List<ServicesResponse> getAll() {
+        List<Services> servicesList = servicesRepository.findServicesIsDeleteFalse();
+        return servicesList.stream()
+                .map(service -> convertToResponse(service, ServicesResponse.class))
+                .toList();
+    }
+
+    @Override
     public List<ServicesResponse> getServiceByType(ServiceType type) {
         List<Services> servicesList = servicesRepository.findServicesByType(type);
         return servicesList.stream()

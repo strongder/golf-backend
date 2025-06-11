@@ -16,4 +16,7 @@ public interface ServicesRepository extends JpaRepository<Services, String> {
 
     @Query("SELECT s FROM Services s WHERE s.isDeleted = false AND s.type != :type")
     List<Services> findServicesByTypeNot(ServiceType type);
+
+    @Query("SELECT s FROM Services s WHERE s.isDeleted = false")
+    List<Services> findServicesIsDeleteFalse();
 }
