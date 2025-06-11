@@ -83,7 +83,6 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
         userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         MembershipType membershipType = memberShipTypeRepository.findById(request.getMembershipTypeId())
                 .orElseThrow(() -> new RuntimeException("Membership type not found"));
-
         Membership membership = new Membership();
         membership.setCode(generateMembershipCode());
         membership.setUserId(request.getUserId());

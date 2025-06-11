@@ -76,8 +76,8 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
-    public List<ToolResponse> getAllGolfClub() {
-        List<Tool> tools = toolsRepository.findByGolfClub();
+    public List<ToolResponse> getToolByType(String type) {
+        List<Tool> tools = toolsRepository.findToolByType(type);
         return modelMapper.map(tools, new TypeToken<List<ToolResponse>>() {}.getType());
     }
 

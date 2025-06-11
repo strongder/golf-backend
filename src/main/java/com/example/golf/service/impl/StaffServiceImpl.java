@@ -51,10 +51,9 @@ public class StaffServiceImpl extends BaseServiceImpl<Staff, String> implements 
         Staff existingStaff = staffRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED)
         );
-        Staff staff = convertToEntity(request);
-        staff.setId(existingStaff.getId());
-        this.save(staff);
-        return convertToResponse(staff, StaffResponse.class);
+        modelMapper.map(request, existingStaff);
+        repository.save(existingStaff);
+        return convertToResponse(existingStaff, StaffResponse.class);
     }
 
 

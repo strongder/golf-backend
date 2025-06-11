@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class PaymentServiceImpl {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    //
     @Transactional
     public VnpayResponse createVnPayPayment(PaymentRequest paymentRequest, HttpServletRequest request) {
         long amount = (long) (paymentRequest.getAmount() * 100); // Chuyển đổi từ Đơn vị tiền tệ
@@ -91,7 +93,7 @@ public class PaymentServiceImpl {
     }
 
     @Transactional
-    public VnpayResponse handlePaymentCallback(String status, String transactionId) {
+    public PaymentResponse handlePaymentCallback(String status, String transactionId) {
         if (status == null || transactionId == null) {
             throw new AppException(ErrorResponse.INVALID_REQUEST_PARAMETERS);
         }
@@ -127,16 +129,10 @@ public class PaymentServiceImpl {
                 notificationRepository.save(notification);
                 notificationServiceImpl.sendNotification(notification);
             }
-            return VnpayResponse.builder()
-                    .code("00")
-                    .message("Payment successfully")
-                    .build();
+            return modelMapper.map(payment, PaymentResponse.class);
         } else {
             payment.setStatus(PaymentStatus.FAILED);
-            return VnpayResponse.builder()
-                    .code("01")
-                    .message("Payment failed")
-                    .build();
+            return modelMapper.map(payment, PaymentResponse.class);
         }
     }
 
@@ -173,6 +169,7 @@ public class PaymentServiceImpl {
     @Transactional
     public Payment createPayment(PaymentRequest paymentRequest) {
         Payment payment = new Payment();
+        payment.setCode(generateCode());
         payment.setUserId(paymentRequest.getUserId());
         payment.setAmount(paymentRequest.getAmount());
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
@@ -187,6 +184,12 @@ public class PaymentServiceImpl {
         PaymentResponse paymentResponse =  modelMapper.map(payment, PaymentResponse.class);
         paymentResponse.setUser(modelMapper.map(userRepository.findById(payment.getUserId()), DataFieldUser.class));
         return responseClass.cast(paymentResponse);
+    }
+
+    public String generateCode()
+    {
+        String code = "PAY" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        return code;
     }
 
 }

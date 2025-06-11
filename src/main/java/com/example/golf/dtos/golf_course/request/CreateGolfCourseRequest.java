@@ -8,7 +8,7 @@ public class CreateGolfCourseRequest {
     private String code;
     private String name;
     private String location;
-//    private MultipartFile image;
+    private MultipartFile image;
     private float length; // do dai san golf
     private String description;
     private int duration; // thoi gian choi

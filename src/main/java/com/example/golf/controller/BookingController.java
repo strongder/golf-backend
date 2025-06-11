@@ -37,9 +37,9 @@ public class BookingController {
     }
 
     @Operation(summary = "Checkin booking")
-    @PostMapping("/check-in/{bookingId}")
-    private ApiResponse checkIn(@PathVariable("bookingId") String bookingId) {
-        return ApiResponse.success(bookingService.checkIn(bookingId));
+    @GetMapping("/check-in")
+    private ApiResponse checkIn(@RequestParam String bookingCode) {
+        return ApiResponse.success(bookingService.checkIn(bookingCode));
     }
 
     @Operation(summary = "Delete booking")
@@ -48,7 +48,6 @@ public class BookingController {
         return ApiResponse.success(bookingService.softDelete(bookingId));
     }
 
-    //getById
     @Operation(summary = "Get booking by id")
     @GetMapping("/{id}")
     private ApiResponse getById(@PathVariable  String id) {
@@ -68,7 +67,7 @@ public class BookingController {
     }
 
     @Operation(summary = "Check out booking")
-    @PostMapping("/check-out")
+    @GetMapping("/check-out")
     public ApiResponse checkOut(@RequestParam  String bookingCode) {
         return ApiResponse.success(bookingService.checkOut(bookingCode));
     }

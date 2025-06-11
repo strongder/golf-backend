@@ -64,7 +64,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
             throw new AppException(ErrorResponse.ENTITY_EXISTED);
         }
         User user = convertToEntity(request);
-        user.setRole(UserRole.STAFF);
+        user.setRole(request.getRole());
         user.setProvider("local");
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setActive(true);
@@ -72,7 +72,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
         Optional<Staff> staff = staffRepository.findStaffByFullNameAndPhone(request.getFullName(), request.getPhone());
         if (staff.isPresent()) {
             staff.get().setUserId(user.getId());
-            staff.get().setRole(StaffRole.STAFF);
             staffRepository.save(staff.get());
         }else {
             Staff newStaff = new Staff();
@@ -80,7 +79,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
             newStaff.setPhone(request.getPhone());
             newStaff.setEmail(request.getEmail());
             newStaff.setUserId(user.getId());
-            newStaff.setRole(StaffRole.STAFF);
+            if( request.getRole() == UserRole.STAFF) {
+                newStaff.setRole(StaffRole.STAFF);
+            } else if(request.getRole() == UserRole.ADMIN) {
+                newStaff.setRole(StaffRole.MANAGER);
+            }
             staffRepository.save(newStaff);
         }
         return convertToResponse(user, UserResponse.class);

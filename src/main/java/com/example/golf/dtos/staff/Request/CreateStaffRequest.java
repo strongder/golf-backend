@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class CreateStaffRequest {
+    private String id;
     private String email;
     private String phone;
     private String dob;

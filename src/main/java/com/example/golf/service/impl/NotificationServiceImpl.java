@@ -25,7 +25,6 @@ public class NotificationServiceImpl {
     private NotificationRepository notificationRepository;
     @Autowired
     private UserServiceImpl userServiceImpl;
-
     /**
      * Đăng ký subscribe SSE cho userId.
      * Mỗi kết nối sẽ tạo một SseEmitter mới, thêm vào danh sách emitter của user.

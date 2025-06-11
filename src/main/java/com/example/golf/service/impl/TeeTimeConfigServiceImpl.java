@@ -46,7 +46,7 @@ public class TeeTimeConfigServiceImpl extends BaseServiceImpl<TeeTimeConfig, Str
         TeeTimeConfig teeTimeConfig = convertToEntity(request);
         teeTimeConfig.setDeleted(false);
         teeTimeConfigRepository.save(teeTimeConfig);
-        teeTimeServiceImpl.generateTeeTimeFromConfig(teeTimeConfig, LocalDate.now());
+        teeTimeServiceImpl.autoCreateTeeTimeRolling();
         return convertToResponse(teeTimeConfig, TeeTimeConfigResponse.class);
     }
 

@@ -18,7 +18,8 @@ public class Services extends BaseEntity {
     private String id;
     private String code;
     private String imageUrl;
-    private String type; // GOLF_CLUB, GOLF_BALL, GOLF_BAG, GOLF_CART, GOLF_SHOES, GOLF_GLOVE, GOLF_TEE
+    @Enumerated(EnumType.STRING)
+    private ServiceType type; // OTHER, SINGLE_CLUB, CLUB_SET, TOOL, CADDIE
     private String name;
     private String description;
     private double price;

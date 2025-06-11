@@ -19,5 +19,5 @@ public interface ToolService {
 
     List<ToolResponse> findAll();
 
-    List<ToolResponse> getAllGolfClub();
+    List<ToolResponse> getToolByType(String type);
 }

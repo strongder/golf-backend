@@ -54,9 +54,9 @@ public class ToolController {
     }
 
     @Operation(summary = "Get all tools by type golf_club")
-    @GetMapping("/golf_club")
-    public ApiResponse getAllGolfClub() {
-        return ApiResponse.success(toolsService.getAllGolfClub());
+    @GetMapping("/type/{type}")
+    public ApiResponse getAllGolfClub(@PathVariable("type") String type) {
+        return ApiResponse.success(toolsService.getToolByType(type));
     }
 
 }

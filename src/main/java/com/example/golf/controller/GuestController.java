@@ -29,15 +29,12 @@ public class GuestController {
     public ApiResponse softDelete(@PathVariable String id) {
         return ApiResponse.success(guestService.softDelete(id));
     }
-
     @GetMapping("/get-by-user/{userId}")
     public ApiResponse getGuestByUserId(@PathVariable String userId) {
         return ApiResponse.success(guestService.getGuestByUserId(userId));
     }
-
     @PutMapping("/update/{id}")
     public ApiResponse updateGuest(@PathVariable String id, @RequestBody UpdateGuestRequest request) {
         return ApiResponse.success(guestService.updateGuest(id, request));
     }
-
 }
