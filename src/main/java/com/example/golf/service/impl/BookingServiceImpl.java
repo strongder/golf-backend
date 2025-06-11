@@ -116,8 +116,6 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         teeTimeRepository.save(teeTime);
         booking.setTeeTimeId(teeTime.getId());
 
-        // Khởi tạo chi phí cơ bản từ tee time
-        booking.setTotalCost(booking.getTotalCost() + teeTime.getPrice() * request.getNumPlayers());
         Booking savedBooking = bookingRepository.save(booking);
         // Xử lý số lỗ không khớp
         if (request.getNumberOfHoles() != golfCourse.getHoles()) {
@@ -280,7 +278,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
                     nextGolfCourse.getId(),
                     bookingDate,
                     startTime.plusMinutes(golfCourse.getDuration()), // Thời gian bắt đầu tee time tiếp theo
-                    TeeTimeStatus.AVAILABLE
+                    TeeTimeStatus.HOLD
             );
             if (nextTeeTimeOpt.isEmpty()) {
                 throw new AppException(ErrorResponse.TEE_TIME_NOT_AVAILABLE);

@@ -6,7 +6,6 @@ import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.enums.GolfCourseStatus;
 import com.example.golf.model.GolfCourse;
-import com.example.golf.model.User;
 import com.example.golf.repository.GolfCourseRepository;
 import com.example.golf.service.GolfCourseService;
 import com.example.golf.utils.SearchUtils;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class GolfCourseServiceImpl extends BaseServiceImpl<GolfCourse, String> implements GolfCourseService {
@@ -63,6 +63,21 @@ public class GolfCourseServiceImpl extends BaseServiceImpl<GolfCourse, String> i
             uploadFileAsync(request.getImage(), golfCourse);
         }
         return convertToResponse(golfCourse, GolfCourseResponse.class);
+    }
+    @Override
+    public List<GolfCourseResponse> getAll() {
+        List<GolfCourse> golfCourses = golfCourseRepository.findByIsDeletedFalse();
+        return golfCourses.stream()
+                .map(golfCourse -> convertToResponse(golfCourse, GolfCourseResponse.class))
+                .toList();
+    }
+
+    @Override
+    public String softDelete(String id) {
+        GolfCourse golfCourse = golfCourseRepository.findById(id).orElseThrow(() -> new RuntimeException("Golf course not found"));
+        golfCourse.setDeleted(true);
+        golfCourseRepository.save(golfCourse);
+        return "Golf course deleted successfully";
     }
 
     @Override

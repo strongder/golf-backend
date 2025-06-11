@@ -31,11 +31,17 @@ public class GolfCourseController {
 
     @GetMapping("/all")
     public ApiResponse getAll() {
-        return ApiResponse.success(golfCourseService.findAll(GolfCourseResponse.class));
+        return ApiResponse.success(golfCourseService.getAll());
     }
 
     @GetMapping("/{id}")
     public ApiResponse getById(@PathVariable("id") String id) {
         return ApiResponse.success(golfCourseService.getById(id, GolfCourseResponse.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse delete(@PathVariable("id") String id) {
+
+        return ApiResponse.success(golfCourseService.softDelete(id));
     }
 }
