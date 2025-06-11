@@ -1,5 +1,6 @@
 package com.example.golf.dtos.staff.Request;
 
+import com.example.golf.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,5 @@ public class CreateStaffRequest {
     private String userId;
     private String fullName;
     private String address;
+    private UserRole role;
 }

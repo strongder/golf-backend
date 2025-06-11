@@ -1,5 +1,6 @@
 package com.example.golf.dtos.guest.request;
 
+import com.example.golf.enums.GuestType;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,4 +13,5 @@ public class UpdateGuestRequest {
     private String gender;
     private String address;
     private String email;
+    private GuestType role;
 }
