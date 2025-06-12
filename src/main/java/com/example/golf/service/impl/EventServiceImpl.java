@@ -8,9 +8,10 @@ import com.example.golf.dtos.search.BaseSearchResponse;
 import com.example.golf.enums.ErrorResponse;
 import com.example.golf.exception.AppException;
 import com.example.golf.model.Event;
-import com.example.golf.model.GolfCourse;
+import com.example.golf.model.Membership;
 import com.example.golf.model.User;
 import com.example.golf.repository.EventRepository;
+import com.example.golf.repository.MemberShipRepository;
 import com.example.golf.service.EventService;
 import com.example.golf.service.GolfCourseService;
 import com.example.golf.service.UserService;
@@ -44,6 +45,8 @@ public class EventServiceImpl extends BaseServiceImpl<Event, String> implements 
     private SearchUtils<Event> searchUtils;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private MemberShipRepository memberShipRepository;
 
     public EventServiceImpl(EventRepository eventRepository) {
         super(eventRepository);
@@ -135,5 +138,27 @@ public class EventServiceImpl extends BaseServiceImpl<Event, String> implements 
         } catch (IOException e) {
             // log error
         }
+    }
+
+
+    // lay ra su kien khuyen mai cho user hien tai de gan vao khi booking(lay ra khuyen mai co discount lon nhat)
+    @Transactional
+    @Override
+    public EventResponse getPromotionEventsForUser(String customId) {
+        String role = null;
+        if(customId.startsWith("STAFF_"))
+        {
+            role = "GUEST";
+        }
+        else{
+            List<Membership> memberships = memberShipRepository.findByUser(customId);
+            if(memberships.isEmpty()) {
+                role = "GUEST";
+            } else {
+                role = "MEMBER";
+            }
+        }
+        Event event = eventRepository.findPromotionEventForUser(role);
+        return modelMapper.map(event, EventResponse.class);
     }
 }

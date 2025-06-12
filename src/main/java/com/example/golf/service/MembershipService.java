@@ -27,5 +27,8 @@ public interface MembershipService extends BaseService<Membership, String> {
 
     List<MembershipResponse> getByUserId(String userId);
 
-    MembershipResponse getByUserAndStatus(String userId, MembershipStatus status);
+    List<MembershipResponse> getByUserAndStatus(String userId, MembershipStatus status);
+
+    // lay membership gan nhat
+    MembershipResponse getMembershipLatest(String userId);
 }

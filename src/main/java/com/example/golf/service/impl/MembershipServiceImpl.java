@@ -3,10 +3,7 @@ package com.example.golf.service.impl;
 import com.example.golf.dtos.membership.request.CreateMembershipRequest;
 import com.example.golf.dtos.membership.request.MembershipSearchRequest;
 import com.example.golf.dtos.membership.response.MembershipResponse;
-import com.example.golf.dtos.membership_type.response.MembershipTypeResponse;
-import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.dtos.search.BaseSearchResponse;
-import com.example.golf.dtos.user.Response.DataFieldUser;
 import com.example.golf.enums.ErrorResponse;
 import com.example.golf.enums.MembershipStatus;
 import com.example.golf.enums.NotificationType;
@@ -73,6 +70,7 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
         response.setMembershipTypeName(membershipType.getName());
         response.setFullName(user.getFullName());
         response.setEmail(user.getEmail());
+        response.setDiscount(membershipType.getDiscount());
         response.setPhone(user.getPhone());
         return responseType.cast(response);
     }
@@ -87,6 +85,7 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
         membership.setCode(generateMembershipCode());
         membership.setUserId(request.getUserId());
         membership.setMembershipTypeId(membershipType.getId());
+        membership.setPrice(membershipType.getPrice());
         membership.setStartDate(LocalDate.now());
         membership.setEndDate(LocalDate.now().plusMonths(membershipType.getDuration()));
         membership.setStatus(MembershipStatus.PENDING);
@@ -176,12 +175,14 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
 
     @Override
     @Transactional
-    public MembershipResponse getByUserAndStatus(String userId, MembershipStatus status) {
-        Membership memberShip = memberShipRepository.findByUserIdAndStatus(userId, status);
+    public List<MembershipResponse> getByUserAndStatus(String userId, MembershipStatus status) {
+        List<Membership> memberShip = memberShipRepository.findByUserIdAndStatus(userId, status);
         if (memberShip == null) {
             throw new AppException(ErrorResponse.ENTITY_NOT_EXISTED);
         }
-        return convertToResponse(memberShip, MembershipResponse.class);
+        return memberShip.stream()
+                .map(m -> convertToResponse(m, MembershipResponse.class))
+                .toList();
     }
 
 
@@ -195,6 +196,28 @@ public class MembershipServiceImpl extends BaseServiceImpl<Membership, String> i
                 memberShipRepository.save(membership);
             }
         }
+    }
+
+    public void cancelAllMembershipPending(String userId, MembershipStatus status)
+    {
+        List<Membership> memberships = memberShipRepository.findByUserIdAndStatus(userId, status);
+        if (memberships.isEmpty()) {
+            throw new AppException(ErrorResponse.ENTITY_NOT_EXISTED);
+        }
+        for (Membership membership : memberships) {
+            membership.setStatus(MembershipStatus.CANCELLED);
+            memberShipRepository.save(membership);
+        }
+    }
+
+    // lay membership gan nhat
+    @Override
+    public MembershipResponse getMembershipLatest(String userId) {
+        Membership membership = memberShipRepository.findByMembershipLatest(userId);
+        if (membership==null) {
+            throw new AppException(ErrorResponse.ENTITY_NOT_EXISTED);
+        }
+        return convertToResponse(membership, MembershipResponse.class);
     }
 
     public String generateMembershipCode() {

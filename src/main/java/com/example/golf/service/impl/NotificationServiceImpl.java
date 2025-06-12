@@ -1,9 +1,12 @@
 package com.example.golf.service.impl;
 
+import com.example.golf.enums.NotificationType;
 import com.example.golf.model.Notification;
 import com.example.golf.model.User;
 import com.example.golf.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -66,6 +69,7 @@ public class NotificationServiceImpl {
     /**
      * Gửi notification đến tất cả kết nối SSE đang mở của user.
      */
+    @Async
     public void sendNotification(Notification data) {
         List<SseEmitter> userEmitters = emitters.get(data.getUserId());
         if (userEmitters != null) {
@@ -111,5 +115,10 @@ public class NotificationServiceImpl {
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         notificationRepository.delete(notification);
         return notificationId;
+    }
+
+    public int getUnreadCount() {
+        User user = userServiceImpl.getCurrentUser();
+        return notificationRepository.countUnreadNotifications(user.getId());
     }
 }

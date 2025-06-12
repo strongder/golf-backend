@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 mysql/
 uploads/
-
+dialog-key.json
 
 
 ### STS ###

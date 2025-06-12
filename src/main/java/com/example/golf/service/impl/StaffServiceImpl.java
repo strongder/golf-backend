@@ -56,7 +56,6 @@ public class StaffServiceImpl extends BaseServiceImpl<Staff, String> implements 
         return convertToResponse(existingStaff, StaffResponse.class);
     }
 
-
     public StaffResponse getByUser(String userId) {
         Staff staff = staffRepository.findByUserId(userId).orElseThrow(
                 () -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED)

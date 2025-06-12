@@ -40,9 +40,13 @@ public class EventController {
     public ApiResponse getEventByTypeAndDate(@RequestBody EventForUserRequest eventForUserRequest){
         return ApiResponse.success(eventService.getEventByTypeAndDate(eventForUserRequest));
     }
-
-    @PostMapping("search")
+    @PostMapping("/search")
     public ApiResponse search(@RequestBody BaseSearchRequest request){
         return ApiResponse.success(eventService.search(request));
+    }
+    // lay ra khuyen mai cho user
+    @GetMapping("/promotion-for-booking/{userId}")
+    public ApiResponse getPromotionForUser(@PathVariable String userId) {
+        return ApiResponse.success(eventService.getPromotionEventsForUser(userId));
     }
 }
