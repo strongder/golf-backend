@@ -15,8 +15,9 @@ public interface MemberShipRepository extends JpaRepository<Membership, String> 
     List<Membership> findByUser(String userId);
 
     @Query("SELECT m FROM Membership m  WHERE m.userId = ?1 AND m.isDeleted = false and m.status = ?2")
-    Membership findByUserIdAndStatus(String userId, MembershipStatus status);
+    List<Membership> findByUserIdAndStatus(String userId, MembershipStatus status);
 
 
-
+    @Query("SELECT m FROM Membership m WHERE m.userId = ?1 AND m.isDeleted = false AND m.status !='CANCELLED' ORDER BY m.createdAt DESC limit 1")
+    Membership findByMembershipLatest(String userId);
 }

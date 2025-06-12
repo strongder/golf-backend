@@ -47,9 +47,9 @@ public class GolfCourseServiceImpl extends BaseServiceImpl<GolfCourse, String> i
         golfCourse.setStatus(GolfCourseStatus.ACTIVE);
         golfCourse.setCode(generateCode());
         golfCourse = golfCourseRepository.save(golfCourse);
-//        if (request.getImage() != null) {
-//            uploadFileAsync(request.getImage(), golfCourse);
-//        }
+        if (request.getImage() != null) {
+            uploadFileAsync(request.getImage(), golfCourse);
+        }
         return convertToResponse(golfCourse, GolfCourseResponse.class);
     }
 

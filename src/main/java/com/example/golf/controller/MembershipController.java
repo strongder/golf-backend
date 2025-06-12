@@ -69,10 +69,15 @@ public class MembershipController {
         return ApiResponse.success(memberShipService.getByUserId(userId));
     }
 
+    @Operation(summary = "Get Latest Membership by User ID")
+    @GetMapping("/latest/{userId}")
+    public ApiResponse getLatestMembership(@PathVariable String userId) {
+        return ApiResponse.success(memberShipService.getMembershipLatest(userId));
+    }
+
     @GetMapping("/user-status")
     @Operation(summary = "Get Membership Type by User ID and Status")
     public ApiResponse getByUserAndStatus(@RequestParam String userId, @RequestParam MembershipStatus status) {
         return ApiResponse.success(memberShipService.getByUserAndStatus(userId, status));
     }
-
 }

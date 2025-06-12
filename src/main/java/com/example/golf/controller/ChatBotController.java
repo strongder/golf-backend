@@ -1,17 +1,21 @@
 package com.example.golf.controller;
 
 import com.example.golf.service.impl.ChatBotServiceImpl;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dialogflow.v2.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -68,4 +72,28 @@ public class ChatBotController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/mobile")
+    public ResponseEntity<String> chatWithBot(@RequestBody Map<String, String> body) throws Exception {
+        String projectId = "golfbot-hfcf";
+        String sessionId = UUID.randomUUID().toString();
+        String text = body.get("message");
+        String languageCode = "vi";
+
+        SessionsClient sessionsClient = SessionsClient.create(
+                SessionsSettings.newBuilder()
+                        .setCredentialsProvider(() ->
+                                GoogleCredentials.fromStream(new FileInputStream("dialog-key.json"))
+                        ).build());
+
+        SessionName session = SessionName.of(projectId, sessionId);
+
+        TextInput.Builder textInput = TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+        QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
+
+        DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+        String reply = response.getQueryResult().getFulfillmentText();
+        return ResponseEntity.ok(reply);
+    }
+
 }

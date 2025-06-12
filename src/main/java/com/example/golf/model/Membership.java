@@ -16,6 +16,7 @@ public class Membership extends BaseEntity {
     private String id;
     private String userId;
     private String code;
+    private double price;
     private String membershipTypeId;
     private int bookingPerMonth;
     private LocalDate startDate; // YYYY-MM-DD

@@ -11,7 +11,6 @@ public class MembershipTypeResponse {
     private String name;
     private double price; // in USD
     private int duration; // in months
-    private int maxBookingPerMonth; // maximum number of bookings allowed per mont
     private int bookingBeforeDay; // number of days before booking allowed)
     private List<String> benefits; // comma-separated list of benefits
     private int discount;

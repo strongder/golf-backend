@@ -3,7 +3,7 @@
     datasource:
       url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/golf?createDatabaseIfNotExist=true
       username: ${MYSQL_USER:root}
-      password: ${MYSQL_PASSWORD:123456}
+      password: ${MYSQL_PASSWORD:1234567890}
     jpa:
       hibernate:
         ddl-auto: update
@@ -42,7 +42,7 @@
       url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
       tmnCode: "B392S5MZ"
       secretKey: "GIGCQNW0JPP8IW4OM6CURR1M8R1EAUZ7"
-      returnUrl: "http://localhost:8080/api/v1/payment/vnpay-callback"
+      returnUrl: "http://192.130.38.101:8080/api/v1/payment/vnpay-callback"
       version: "2.1.0"
       command: "pay"
       orderType: "other"

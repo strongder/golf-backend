@@ -17,7 +17,6 @@ public class MembershipType extends BaseEntity {
     private String name;
     private double price; // in USD
     private int duration; // in months
-    private int maxBookingPerMonth; // maximum number of bookings allowed per mont
     private int bookingBeforeDay; // number of days before booking allowed
     @Convert(converter = ListToJsonConverter.class)
     @Column(columnDefinition = "json")

@@ -68,7 +68,7 @@ public class GuestServiceImpl extends BaseServiceImpl<Guest, String> implements 
                     .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
             user.setFullName(request.getFullName());
             user.setPhone(request.getPhone());
-            user.setEmail(request.getEmail());
+//            user.setEmail(request.getEmail());
             userRepository.save(user);
         }
         return convertToResponse(saveGuest, GuestResponse.class);

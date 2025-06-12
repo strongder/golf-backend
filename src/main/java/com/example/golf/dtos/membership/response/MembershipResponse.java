@@ -11,6 +11,8 @@ public class MembershipResponse {
     private String code;
     private String membershipTypeId;
     private String fullName;
+    private double price;
+    private double discount;
     private String email;
     private String phone;
     private String membershipTypeName;

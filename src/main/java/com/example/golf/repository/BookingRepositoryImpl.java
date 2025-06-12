@@ -49,7 +49,7 @@ public class BookingRepositoryImpl {
         applySorting(cb, query, root, request);
 
         // Pagination
-        int page = request.getPage();
+        int page = request.getPage() -1 < 0 ? 0 : request.getPage() - 1; // Ensure page starts from 0
         int size = request.getSize();
         TypedQuery<Booking> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult(page * size);

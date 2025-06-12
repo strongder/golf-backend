@@ -20,4 +20,8 @@ public interface EventRepository extends JpaRepository<Event, String> {
             @Param("status") String status,
             @Param("role") String role
     );
+    @Query("SELECT e FROM Event e WHERE e.type = 'PROMOTION' AND e.isDeleted = false " +
+            "AND e.status = 'ACTIVE' AND (e.targetUserType = :role OR e.targetUserType = 'ALL') " +
+            "ORDER BY e.discountPercent DESC")
+    Event findPromotionEventForUser(String role);
 }

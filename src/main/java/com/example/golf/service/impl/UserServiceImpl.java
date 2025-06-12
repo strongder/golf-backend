@@ -112,6 +112,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
             guestRepository.save(newGuest);
         } else {
             guest.get().setUserId(user.getId());
+            guest.get().setEmail(request.getFullName());
             guest.get().setRole(GuestType.GOLFER);
             guestRepository.save(guest.get());
         }

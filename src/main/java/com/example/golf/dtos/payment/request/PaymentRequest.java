@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PaymentRequest {
     private String id;
     private String userId; // id of user
+    private String device;
     private String referenceId; // id of booking or membership
     private double amount; // amount of money
     private String type; // BOOKING, MEMBERSHIP

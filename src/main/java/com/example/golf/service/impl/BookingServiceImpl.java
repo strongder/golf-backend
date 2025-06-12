@@ -72,21 +72,20 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         GolfCourse golfCourse = golfCourseRepository.findById(request.getGolfCourseId())
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         Booking booking = convertToEntity(request);
-        Guest guest = guestRepository.findGuestByFullNameAndPhone(request.getFullName(), request.getPhone())
-                .orElseGet(() -> {
-                    Guest newGuest = new Guest();
-                    newGuest.setFullName(request.getFullName());
-                    newGuest.setPhone(request.getPhone());
-                    newGuest.setRole(GuestType.GUEST);
-                    newGuest.setTotalBooking(1);
-                    Guest saveGuest =  guestRepository.save(newGuest);
-                    booking.setGolferId(saveGuest.getId());
-                    return saveGuest;
-                });
-
-        if (guest.getId() != null) {
-            guest.setTotalBooking(guest.getTotalBooking() + 1);
-            guestRepository.save(guest);
+        Optional<Guest> guest = guestRepository.findGuestByFullNameAndPhone(request.getFullName(), request.getPhone());
+        if(guest.isEmpty())
+        {
+            Guest newGuest = new Guest();
+            newGuest.setFullName(request.getFullName());
+            newGuest.setEmail(request.getEmail());
+            newGuest.setPhone(request.getPhone());
+            newGuest.setRole(GuestType.GUEST);
+            newGuest.setTotalBooking(1);
+            Guest saveGuest =  guestRepository.save(newGuest);
+            booking.setGolferId(saveGuest.getId());
+        }else {
+            guest.get().setTotalBooking(guest.get().getTotalBooking() + 1);
+            guestRepository.save(guest.get());
         }
         booking.setBookingCode(generateBookingCode());
         booking.setStatus(BookingStatus.PENDING);
@@ -95,7 +94,6 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         if (teeTime.getStatus() != TeeTimeStatus.HOLD) {
             throw new RuntimeException("Tee time is not being held");
         }
-
         //  Kiểm tra thời gian HOLD còn hiệu lực (ví dụ: 5 phút)
         if (teeTime.getHeldAt() != null &&
                 teeTime.getHeldAt().isBefore(LocalDateTime.now().minusMinutes(5))) {
@@ -103,11 +101,9 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         }
         // check tee time dang giu boi ai ?
         String currentUserId = request.getUserId() != null ? request.getUserId() : "STAFF_" + currentUser.getId();
-
         if (teeTime.getHeldBy() != null && !teeTime.getHeldBy().equals(currentUserId)) {
             throw new RuntimeException("Tee time is held by another user");
         }
-
         // ✅ Cập nhật trạng thái thành BOOKED
         teeTime.setStatus(TeeTimeStatus.BOOKED);
         teeTime.setHeldAt(null);

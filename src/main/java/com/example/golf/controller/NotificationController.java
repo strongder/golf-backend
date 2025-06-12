@@ -39,6 +39,12 @@ public class NotificationController {
         return ApiResponse.success("All notifications marked as read for user: " + userId);
     }
 
+    @GetMapping("/unread-count")
+    public ApiResponse getUnreadCount() {
+        return ApiResponse.success(notificationService.getUnreadCount());
+    }
+
+
     @DeleteMapping("/delete/{notificationId}")
     public ApiResponse deleteNotification(@PathVariable String notificationId) {
         return ApiResponse.success(notificationService.deleteNotification(notificationId));
