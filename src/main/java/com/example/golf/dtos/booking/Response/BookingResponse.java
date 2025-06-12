@@ -21,6 +21,7 @@ public class BookingResponse {
     private String fullName; // Tên khách đặt sân
     private String email; // Email khách đặt sân
     private String golferId; // NULL nếu là khách vãng lai, hoặc ID golfer nếu có tài khoản
+    private String userId;
     private DataFieldGolfCourse golfCourse; // Sân golf được đặt
     private LocalDate bookingDate; // Ngày đặt sân
     private DataFieldTeeTime teeTime; // Thời gian đặt sân
