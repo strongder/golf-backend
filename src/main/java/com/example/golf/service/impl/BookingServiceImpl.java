@@ -167,6 +167,29 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         bookingRepository.save(booking);
         return request.getBookingId();
     }
+    @Transactional
+    public String confirmBooking(StatusBookingRequest request)
+    {
+        Booking booking = bookingRepository.findById(request.getBookingId()).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        if (!isValidStatusTransition(booking.getStatus(), request.getStatus())) {
+            throw new AppException(ErrorResponse.INVALID_STATUS_TRANSITION);
+        }
+        Guest guest = guestRepository.findGuestByFullNameAndPhone(booking.getFullName(), booking.getPhone())
+                .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setPaymentMethod("TRANSFER");
+        paymentRequest.setAmount(booking.getDepositAmount());
+        paymentRequest.setUserId(guest.getId());
+        paymentRequest.setType(PaymentType.BOOKING + "");
+        paymentRequest.setReferenceId(booking.getId());
+        paymentRequest.setStatus(PaymentStatus.COMPLETED + "");
+        paymentServiceImpl.createPayment(paymentRequest);
+        booking.setStatus(request.getStatus());
+        bookingRepository.save(booking);
+        return request.getBookingId();
+    }
+
+
 
     @Transactional
     public BookingResponse checkIn(String bookingCode) {
@@ -182,17 +205,11 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         teeTime.setStatus(TeeTimeStatus.CHECKED_IN);
         teeTimeRepository.save(teeTime);
         bookingRepository.save(booking);
-        List<BookingDetail> bookingDetails = bookingDetailRepository.findByBookingId(booking.getId());
-        bookingDetails.forEach(bookingDetail -> {
-            if (bookingDetail.getToolId() != null) {
-                toolService.calcQuantity(bookingDetail.getToolId(), bookingDetail.getQuantity(), true);
-            }
-        });
         return convertToResponse(booking, BookingResponse.class);
     }
 
     @Transactional
-    public BookingResponse checkOut(String bookingCode ) {
+    public BookingResponse checkOut(String bookingCode, String paymentMethod ) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
@@ -202,12 +219,6 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         booking.setCheckOutTime(LocalDateTime.now());
 
         bookingRepository.save(booking);
-        List<BookingDetail> bookingDetails = bookingDetailRepository.findByBookingId(booking.getId());
-        bookingDetails.forEach(bookingDetail -> {
-            if (bookingDetail.getToolId() != null) {
-                toolService.calcQuantity(bookingDetail.getToolId(), bookingDetail.getQuantity(), false);
-            }
-        });
         TeeTime teeTime = teeTimeRepository.findById(booking.getTeeTimeId())
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         teeTime.setStatus(TeeTimeStatus.CHECKED_OUT);
@@ -216,7 +227,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
         Guest guest = guestRepository.findGuestByFullNameAndPhone(booking.getFullName(), booking.getPhone())
                 .orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
         PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setPaymentMethod(booking.getPaymentMethod());
+        paymentRequest.setPaymentMethod(paymentMethod);
         paymentRequest.setAmount(booking.getTotalCost() - booking.getDepositAmount());
         paymentRequest.setUserId(guest.getId());
         paymentRequest.setType(PaymentType.BOOKING + "");
@@ -287,13 +298,9 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
             startTime = nextTeeTime.getStartTime().plusMinutes(nextGolfCourse.getDuration());
         }
     }
-
-
     public String generateBookingCode() {
         return "GOLF-" + System.currentTimeMillis();
     }
-
-
     // viet api chạy moi 5p kiem tra booking xem cai nao qua thoi gian dat 5 phut con pending thi huy
     @Scheduled(fixedRate = 300000) // Chạy mỗi 5 phút
     public void cancelPendingBookings() {
@@ -310,16 +317,6 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, String> impleme
                 bookingRepository.save(booking);
             }
         }
-    }
-
-    // tinh toan chi phi khi co khuyen mai hoac la membership
-    public double calculateTotalCost(Booking booking) {
-        double totalCost = 0.0;
-        List<BookingDetail> bookingDetails = bookingDetailRepository.findByBookingId(booking.getId());
-        for (BookingDetail bookingDetail : bookingDetails) {
-            totalCost += bookingDetail.getTotalPrice();
-        }
-        return totalCost;
     }
 
 

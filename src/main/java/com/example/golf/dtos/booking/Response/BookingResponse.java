@@ -34,6 +34,8 @@ public class BookingResponse {
     private String checkInBy; // Nhân viên thực hiện check-in
     private double priceByCourse;
     private double priceByService;
+    private double discountPromotion; // Mã giảm giá nếu có
+    private double discountMembership; // Mã giảm giá thành viên nếu có
     private double totalCost; // Tổng chi phí (sân golf + dịch vụ)
     private String checkOutBy; // Nhân viên thực hiện check-out
     private String note; // Ghi chú của khách hàng

@@ -49,25 +49,21 @@ public class BookingDetailServiceImpl extends BaseServiceImpl<BookingDetail, Str
     @Transactional
     public void createBookingDetail(String bookingId, List<BookingDetailRequest> request) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
-        double totalPrice = 0.0;
         for (BookingDetailRequest detail : request) {
             BookingDetail bookingDetail = modelMapper.map(detail, BookingDetail.class);
             bookingDetail.setBookingId(bookingId);
             if ((bookingDetail.getToolId() != null) && !bookingDetail.getToolId().isEmpty()) {
                 Tool tool = toolsRepository.findById(bookingDetail.getToolId()).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
                 toolsService.calcQuantity(bookingDetail.getToolId(), bookingDetail.getQuantity(), true);
-                totalPrice += tool.getRentPrice() * bookingDetail.getQuantity();
                 bookingDetail.setUnitPrice(tool.getRentPrice());
                 bookingDetail.setTotalPrice(tool.getRentPrice() * bookingDetail.getQuantity());
             } else {
                 Services service = serviceRepository.findById(bookingDetail.getServiceId()).orElseThrow(() -> new AppException(ErrorResponse.ENTITY_NOT_EXISTED));
-                totalPrice += service.getPrice() * bookingDetail.getQuantity();
                 bookingDetail.setUnitPrice(service.getPrice());
                 bookingDetail.setTotalPrice(service.getPrice() * bookingDetail.getQuantity());
             }
             this.save(bookingDetail);
         }
-        booking.setTotalCost(booking.getTotalCost() + totalPrice);
         bookingRepository.save(booking);
     }
 

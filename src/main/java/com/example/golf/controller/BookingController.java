@@ -5,6 +5,7 @@ import com.example.golf.dtos.booking.Request.*;
 import com.example.golf.dtos.booking.Response.BookingResponse;
 import com.example.golf.dtos.search.BaseSearchRequest;
 import com.example.golf.service.BookingService;
+import com.example.golf.service.impl.BookingServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private BookingServiceImpl bookingServiceImpl;
 
     @Operation(summary = "Create booking")
     @PostMapping("/create")
@@ -66,9 +69,15 @@ public class BookingController {
         return ApiResponse.success(bookingService.updateStatus(request));
     }
 
+    @Operation(summary = "Change status of booking")
+    @PostMapping("/confirm")
+    public ApiResponse confirm(@RequestBody StatusBookingRequest request) {
+        return ApiResponse.success(bookingServiceImpl.confirmBooking(request));
+    }
+
     @Operation(summary = "Check out booking")
     @GetMapping("/check-out")
-    public ApiResponse checkOut(@RequestParam  String bookingCode) {
-        return ApiResponse.success(bookingService.checkOut(bookingCode));
+    public ApiResponse checkOut(@RequestParam  String bookingCode, @RequestParam String paymentMethod) {
+        return ApiResponse.success(bookingService.checkOut(bookingCode, paymentMethod));
     }
 }

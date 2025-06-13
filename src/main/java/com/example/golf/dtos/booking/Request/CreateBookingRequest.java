@@ -19,6 +19,8 @@ public class CreateBookingRequest {
     private int numberOfHoles;
     private String teeTimeId;
     private int numPlayers;
+    private double discountPromotion;
+    private double discountMembership;
     private double depositAmount;
     private double totalCost;
     private BookingStatus status;

@@ -14,7 +14,7 @@ public interface BookingService extends BaseService<Booking, String> {
    BookingResponse updateBooking(String bookingId, UpdateBookingRequest request);
    String softDelete(String bookingId);
    BaseSearchResponse<BookingResponse> search(BookingSearchRequest request);
-   BookingResponse checkOut(String bookingCode);
+   BookingResponse checkOut(String bookingCode, String paymentMethod);
    void changeStatus(String bookingId, BookingStatus status);
    Object checkIn(String bookingCode);
 }

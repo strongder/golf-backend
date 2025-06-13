@@ -27,7 +27,7 @@ public class Booking extends BaseEntity{
     private int numPlayers; // Số người chơi đặt trước
     private int numberOfHoles; // Số lỗ golf được đặt
     @Enumerated(EnumType.STRING)
-    private BookingStatus status; // PENDING ,CONFIRMED, PLAYING, COMPLETED, CHECKED_OUT
+    private BookingStatus status; // PENDING ,CONFIRMED, PLAYING, COMPLETED
     private LocalDateTime checkInTime; // Thời gian check-in thực tế
     private LocalDateTime checkOutTime; // Thời gian check-out thực tế
     private double depositAmount; // Số tiền khách đã đặt cọc
@@ -35,6 +35,8 @@ public class Booking extends BaseEntity{
     private String checkInBy;
     private String checkOutBy; // Nhân viên thực hiện check-out
     private String paymentMethod; //"cash", , "VNPay"
+    private String discountPromotion; // Mã giảm giá nếu có
+    private String discountMembership; // Mã giảm giá thành viên nếu có
     private String note;;
 
 }
